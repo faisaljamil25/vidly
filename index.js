@@ -12,14 +12,16 @@ mongoose
   .then(() => console.log("Connected to MongoDB..."))
   .catch((err) => console.error("Could not connect to MongoDB..."));
 
-const genres = require("./routes/genres");
 const home = require("./routes/home");
+const genres = require("./routes/genres");
+const customers = require("./routes/customers");
 
 // Middleware
 app.use(express.json());
 
 // Routes
 app.use("/api/genres", genres);
+app.use("/api/customers", customers);
 app.use("/", home);
 
 const port = process.env.PORT || 3000;

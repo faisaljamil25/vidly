@@ -16,7 +16,7 @@ const Genre = mongoose.model("Genre", genreSchema);
 
 const genreValidation = (genre) => {
   const schema = Joi.object({
-    name: Joi.string().min(3).required(),
+    name: Joi.string().min(5).max(50).required(),
   });
   return schema.validate(genre);
 };
@@ -34,7 +34,7 @@ router.get("/:id", async (req, res) => {
 
 router.post("/", async (req, res) => {
   const { error, value } = genreValidation(req.body);
-  if (error) return res.status(400).send(error.message); // 400 Bad Request
+  if (error) return res.status(400).send(error.details[0].message); // 400 Bad Request
 
   let genre = new Genre({
     name: req.body.name,
@@ -46,7 +46,7 @@ router.post("/", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   const { error, value } = genreValidation(req.body);
-  if (error) return res.status(400).send(error.message); // 400 Bad Request
+  if (error) return res.status(400).send(error.details[0].message); // 400 Bad Request
 
   const genre = await Genre.findByIdAndUpdate(
     req.params.id,
