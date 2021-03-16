@@ -1,37 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const Joi = require("joi");
-const mongoose = require("mongoose");
-
-const customerSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    minlength: 5,
-    maxlength: 50,
-  },
-  isGold: {
-    type: Boolean,
-    default: false,
-  },
-  phone: {
-    type: String,
-    required: true,
-    minlength: 5,
-    maxlength: 50,
-  },
-});
-
-const Customer = mongoose.model("Customer", customerSchema);
-
-const customerValidation = (customer) => {
-  const schema = Joi.object({
-    name: Joi.string().min(5).max(50).required(),
-    phone: Joi.string().min(5).max(50).required(),
-    isGold: Joi.boolean(),
-  });
-  return schema.validate(customer);
-};
+const { Customer, validate } = require("../models/customer");
 
 router.get("/", async (req, res) => {
   const customers = await Customer.find().sort("name");
@@ -45,7 +14,7 @@ router.get("/:id", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { error, value } = customerValidation(req.body);
+  const { error, value } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message); // 400 Bad Request
 
   let customer = new Customer({
@@ -59,7 +28,7 @@ router.post("/", async (req, res) => {
 });
 
 router.put("/:id", async (req, res) => {
-  const { error, value } = customerValidation(req.body);
+  const { error, value } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message); // 400 Bad Request
 
   const customer = await Customer.findByIdAndUpdate(
