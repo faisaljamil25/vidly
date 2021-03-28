@@ -1,4 +1,4 @@
-import express, { json } from 'express';
+import express from 'express';
 import mongoose from 'mongoose';
 import home from './routes/home.js';
 import genres from './routes/genres.js';
@@ -17,7 +17,7 @@ mongoose
   .catch((err) => console.error('Could not connect to MongoDB...'));
 
 // Middleware
-app.use(json());
+app.use(express.json());
 
 // Routes
 app.use('/api/genres', genres);
